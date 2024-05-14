@@ -5,9 +5,8 @@ import argparse
 import imutils
 import time
 import cv2
-from yolowtracker import getCoordiantes
+from getcoordiantes import getCoordinates
 
-model= YOLO("best11.pt")
 
 ap = argparse.ArgumentParser()
 ap.add_argument("-v", "--video", type=str,
@@ -70,17 +69,24 @@ while True:
 	key = cv2.waitKey(1) & 0xFF
 	# if the 's' key is selected, we are going to "select" a bounding
 	# box to track
-if key == ord("s"):
-    # Pass the current frame to the YOLO model for object detection
-    yolo_outputs = model(frame)
-    # Extract the bounding box coordinates from the YOLO outputs
-    boxes = (getCoordiantes)
-    # If there are any detected objects, use the first one as the new ROI
-    if len(boxes) > 0:
-        x, y, w, h = boxes[0]
-        initBB = (x, y, w, h)
-        # Update the tracker with the new ROI
-        tracker.init(frame, initBB)
+
+#idk whats wrong with it, aint got no coordinates in it
+	if key == ord("s"):
+		print("starting")
+		look=vs.read()
+		model=YOLO("best11.pt")#şuanda model bakıyor ancak BB alamıyor
+		yolo_outputs = model(look)
+		
+		boxes = getCoordinates()
+		
+		if len(boxes) > 0:
+			
+			fx, fy, lx, ly = boxes
+			initBB = cv2.rectangle(look,(fx,fy),(lx,fy))#(x1, y1), (x2, y2)
+			# Update the tracker with the new ROI
+			tracker.init(frame, initBB)
+			fps=fps().start()
+
 
 		
 			
