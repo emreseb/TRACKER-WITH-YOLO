@@ -1,7 +1,7 @@
 from ultralytics import YOLO
 import cv2
 import math 
-
+from getcoordiantes import getCoordinates
 cap = cv2.VideoCapture(0)
 cap.set(3, 1920)
 cap.set(4, 1080)
@@ -18,16 +18,17 @@ while True:
     results = model(img, stream=True)
 
     
-    for r in results:
+    for r in results:#rsults ile kaydediyor
         boxes = r.boxes
 
         for box in boxes:
             
             x1, y1, x2, y2 = box.xyxy[0]
             x1, y1, x2, y2 = int(x1), int(y1), int(x2), int(y2) 
+            
 
             
-            cv2.rectangle(img, (x1, y1), (x2, y2), (255, 0, 255), 3)
+            cv2.rectangle(img, (x1, y1), (x2, y2), (255, 0, 255), 3)#drawing the bounding box
 
 
             
@@ -51,19 +52,7 @@ while True:
     if cv2.waitKey(1) == ord('q'):
         break
 
-def getCoordinates(image_width, image_height, box):
-    x_center, y_center, width, height = box.xyxy[0]
-    x_center_pixel = x_center * image_width
-    y_center_pixel = y_center * image_height
-    halfwidth = width * image_width / 2
-    halfheight = height * image_height / 2
-
-    xmin = int(x_center_pixel - halfwidth)
-    ymin = int(y_center_pixel - halfheight)
-    xmax = int(x_center_pixel + halfwidth)
-    ymax = int(y_center_pixel + halfwidth)
-    return xmin, ymin, xmax, ymax
-    
+getCoordinates(x1,y1,x2,y2)
 
 cap.release()
 cv2.destroyAllWindows()
