@@ -5,7 +5,7 @@ import argparse
 import imutils
 import time
 import cv2
-from getcoordiantes import getCoordinates
+import numpy as np
 
 
 ap = argparse.ArgumentParser()
@@ -70,22 +70,29 @@ while True:
 	# if the 's' key is selected, we are going to "select" a bounding
 	# box to track
 
-#idk whats wrong with it, aint got no coordinates in it
+
 	if key == ord("s"):
-		print("starting")
+		
+		print("[INFO] Starting detection...")
 		look=vs.read()
-		model=YOLO("best11.pt")#şuanda model bakıyor ancak BB alamıyor
+		model=YOLO("best11.pt")
 		yolo_outputs = model(look)
+
+		for r in yolo_outputs:
+			boxes= r.boxes
+			for box in boxes:
+				x1, y1, x2, y2 = box.xyxy[0]
+				rects = np.zeros((frame.shape[0], frame.shape[1], 4), dtype=np.int32)
+				bbox=rects[x1,y1,x2,y2]
+				tracker.init(frame, (x1, y1, (x2 - x1), (y2 - y1)))
+				print(x1,y1,x2,y2)
+				fps = FPS().start()
+                
+    			
+	
 		
-		boxes = getCoordinates()
-		
-		if len(boxes) > 0:
+
 			
-			fx, fy, lx, ly = boxes
-			initBB = cv2.rectangle(look,(fx,fy),(lx,fy))#(x1, y1), (x2, y2)
-			# Update the tracker with the new ROI
-			tracker.init(frame, initBB)
-			fps=fps().start()
 
 
 		
